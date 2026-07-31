@@ -1,0 +1,237 @@
+import java.util.Scanner;
+
+class BankAccount {
+
+    int accountNumber;
+    String customerName;
+    double balance;
+
+    BankAccount(int accountNumber, String customerName, double balance) {
+        this.accountNumber = accountNumber;
+        this.customerName = customerName;
+        this.balance = balance;
+    }
+
+
+    void deposit(double amount) {
+        balance = balance + amount;
+        System.out.println("Amount deposited: " + amount);
+    }
+
+    void withdraw(double amount) {
+        if (amount <= balance) {
+            balance = balance - amount;
+            System.out.println("Amount withdrawn: " + amount);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+
+   
+    void displayDetails() {
+        System.out.println("Account Number : " + accountNumber);
+        System.out.println("Customer Name  : " + customerName);
+        System.out.println("Balance        : " + balance);
+    }
+}
+
+
+class SavingsAccount extends BankAccount {
+
+    double interestRate = 4.0;
+
+    SavingsAccount(int accountNumber, String customerName, double balance) {
+
+        super(accountNumber, customerName, balance);
+    }
+
+    @Override
+    void withdraw(double amount) {
+
+        if (balance - amount >= 500) {
+            balance = balance - amount;
+            System.out.println("Savings Account withdrawal: " + amount);
+        } else {
+            System.out.println("Minimum balance of 500 must be maintained.");
+        }
+    }
+
+    void calculateInterest() {
+        double interest = balance * interestRate / 100;
+        System.out.println("Savings Interest: " + interest);
+    }
+}
+
+class CurrentAccount extends BankAccount {
+
+    double overdraftLimit = 5000;
+
+    CurrentAccount(int accountNumber, String customerName, double balance) {
+
+        super(accountNumber, customerName, balance);
+    }
+
+    @Override
+    void withdraw(double amount) {
+
+        if (amount <= balance + overdraftLimit) {
+            balance = balance - amount;
+            System.out.println("Current Account withdrawal: " + amount);
+        } else {
+            System.out.println("Overdraft limit exceeded!");
+        }
+    }
+}
+
+
+class FixedDepositAccount extends BankAccount {
+
+    double interestRate = 7.0;
+
+    FixedDepositAccount(int accountNumber, String customerName, double balance) {
+
+        super(accountNumber, customerName, balance);
+    }
+
+    @Override
+    void withdraw(double amount) {
+
+        System.out.println("Withdrawal is not allowed from Fixed Deposit Account.");
+    }
+
+    void calculateInterest() {
+        double interest = balance * interestRate / 100;
+        System.out.println("Fixed Deposit Interest: " + interest);
+    }
+}
+
+
+class SalarySavingsAccount extends SavingsAccount {
+
+    SalarySavingsAccount(int accountNumber, String customerName, double balance) {
+
+        super(accountNumber, customerName, balance);
+    }
+
+  
+    @Override
+    void withdraw(double amount) {
+
+        if (amount <= balance) {
+            balance = balance - amount;
+            System.out.println("Salary Account withdrawal: " + amount);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+}
+
+class PremiumSalaryAccount extends SalarySavingsAccount {
+
+    PremiumSalaryAccount(int accountNumber, String customerName, double balance) {
+
+        super(accountNumber, customerName, balance);
+    }
+
+  
+    @Override
+    void withdraw(double amount) {
+
+        if (amount <= balance) {
+            balance = balance - amount;
+            System.out.println("Premium Salary Account withdrawal: " + amount);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+
+    void premiumBenefit() {
+        System.out.println("Premium Benefit: No minimum balance required.");
+    }
+}
+
+
+public class BankManagementSystem {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+    
+        System.out.println("   BANK MANAGEMENT SYSTEM");
+      
+
+        System.out.print("Enter Account Number: ");
+        int accountNumber = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Customer Name: ");
+        String customerName = sc.nextLine();
+
+        System.out.print("Enter Initial Balance: ");
+        double balance = sc.nextDouble();
+
+        System.out.println("Select Account Type:");
+        System.out.println("1. Savings Account");
+        System.out.println("2. Current Account");
+        System.out.println("3. Fixed Deposit Account");
+        System.out.println("4. Salary Savings Account");
+        System.out.println("5. Premium Salary Account");
+
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+
+        BankAccount account;
+
+        switch (choice) {
+
+            case 1:
+                account = new SavingsAccount(
+                        accountNumber, customerName, balance);
+                break;
+
+            case 2:
+                account = new CurrentAccount(
+                        accountNumber, customerName, balance);
+                break;
+
+            case 3:
+                account = new FixedDepositAccount(
+                        accountNumber, customerName, balance);
+                break;
+
+            case 4:
+                account = new SalarySavingsAccount(
+                        accountNumber, customerName, balance);
+                break;
+
+            case 5:
+                account = new PremiumSalaryAccount(
+                        accountNumber, customerName, balance);
+                break;
+
+            default:
+                System.out.println("Invalid account type!");
+                sc.close();
+                return;
+        }
+
+        account.displayDetails();
+
+        System.out.print("Enter amount to deposit: ");
+        double depositAmount = sc.nextDouble();
+
+        account.deposit(depositAmount);
+
+        System.out.print("Enter amount to withdraw: ");
+        double withdrawAmount = sc.nextDouble();
+
+      
+        account.withdraw(withdrawAmount);
+
+        System.out.println("----- Final Account Details -----");
+        account.displayDetails();
+
+        sc.close();
+    }
+}
